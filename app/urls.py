@@ -22,7 +22,12 @@ urlpatterns = [
     path("checkout/",views.Check_out.as_view(),name="checkout"),
 
     path("paymentdone/",views.payment_done,name="paymentdone"),
-    path("orders/",views.home,name="orders"),
+    path("orders/",views.orders,name="orders"),
+
+    path("pluswishlist/",views.plus_wishlist),
+    path("minuswishlist/",views.minus_wishlist),
+
+
     
 
     path('pluscart/',views.plus_cart),
