@@ -19,7 +19,11 @@ urlpatterns = [
 
     path("add-to-cart/",views.add_to_cart,name="add-to-cart"),
     path("cart/",views.show_cart,name="showcart"),
-    path("checkout/",views.show_cart,name="checkout"),
+    path("checkout/",views.Check_out.as_view(),name="checkout"),
+
+    path("paymentdone/",views.payment_done,name="paymentdone"),
+    path("orders/",views.home,name="orders"),
+    
 
     path('pluscart/',views.plus_cart),
     path('minuscart/',views.minus_cart),

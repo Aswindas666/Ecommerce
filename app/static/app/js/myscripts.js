@@ -55,6 +55,7 @@ $('.remove-cart').click(function(){
             document.getElementById("totalamount").innerText=data.totalamount
             eml.parentNode.parentNode.parentNode.parentNode.romove()
             // location.reload();
+            window.location.href='http://127.0.0.1:8000/cart/'
         }
     
     })
