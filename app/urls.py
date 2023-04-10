@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib import admin
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -23,6 +24,9 @@ urlpatterns = [
 
     path("paymentdone/",views.payment_done,name="paymentdone"),
     path("orders/",views.orders,name="orders"),
+
+    path("search/",views.search,name="search"),
+
 
     path("pluswishlist/",views.plus_wishlist),
     path("minuswishlist/",views.minus_wishlist),
@@ -51,3 +55,7 @@ urlpatterns = [
 
     
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.site_header = "E-commerce"
+admin.site.site_title = "Ecommerce"
+admin.site.site_index_title = "Welcome to E commerce website"

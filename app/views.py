@@ -8,7 +8,11 @@ from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
 import razorpay
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 # Create your views here.
+
+@login_required
 def home(request):
     totalitem = 0
     wishitem = 0
@@ -18,6 +22,7 @@ def home(request):
 
     return render(request,"app/home.html")
 
+@login_required
 def about(request):
     totalitem = 0
     wishitem = 0
@@ -26,6 +31,7 @@ def about(request):
         wishitem = len(Wishlist.objects.filter(user=request.user))
     return render(request,"app/about.html",locals())
 
+@login_required
 def contact(request):
     totalitem = 0
     wishitem = 0
@@ -34,6 +40,7 @@ def contact(request):
         wishitem = Wishlist(Cart.objects.filter(user=request.user))
     return render(request,"app/contact.html",locals())
 
+@method_decorator(login_required,name='dispatch')
 class CategoryView(View):
     def get(self,request,val):
         totalitem = 0
@@ -46,6 +53,7 @@ class CategoryView(View):
 
         return render(request,"app/category.html",locals())
 
+@method_decorator(login_required,name='dispatch')
 class CategoryTitle(View):
     def get(self,request,val):
         product = Product.objects.filter(title=val)
@@ -55,6 +63,7 @@ class CategoryTitle(View):
             totalitem = len(Cart.objects.filter(user=request.user))
         return render(request,"app/category.html",locals())
 
+@method_decorator(login_required,name='dispatch')
 class ProductDetail(View):
     def get(self,request,pk):
         product = Product.objects.get(pk=pk)
@@ -67,6 +76,7 @@ class ProductDetail(View):
             totalitem = len(Cart.objects.filter(user=request.user))
         return render(request,"app/productdetail.html",locals())
 
+@method_decorator(login_required,name='dispatch')
 class CustomerRegistrationView(View):
     def get(self,request):
         form = CustomerRegistrationForm()
@@ -82,7 +92,8 @@ class CustomerRegistrationView(View):
         else:
             messages.warning(request,"Invalid Input Data")
         return render(request,"app/customerregistration.html",locals())
-    
+
+@method_decorator(login_required,name='dispatch')   
 class ProfileView(View):
     def get(self,request):
         form = CustomerProfileForm()
@@ -109,7 +120,8 @@ class ProfileView(View):
         else:
             messages.warning(request,"Invalid Input Data")
         return render(request,"app/profile.html",locals())
-    
+
+@login_required    
 def address(request):
         add = Customer.objects.filter(user=request.user)
         totalitem = 0
@@ -119,6 +131,8 @@ def address(request):
             totalitem = len(Cart.objects.filter(user=request.user))
         return render(request,'app/address.html',locals())
 
+
+@method_decorator(login_required,name='dispatch')
 class UpdateAddress(View):
     def get(self,request,pk):
         #to show the data in the form before edit
@@ -146,29 +160,38 @@ class UpdateAddress(View):
     
         # return render(request,'app/updateaddress.html',locals())
 
-
+@login_required
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
     product = Product.objects.get(id=product_id)
-    Cart(user=user,product=product).save()
-    return redirect("/cart")
+    if Cart.objects.filter(product=product_id).exists():
+        obj=Cart.objects.get(product=product_id,user=user)
+        obj.quantity +=1
+        obj.save()
+        return redirect('showcart')
+    else:
+        Cart(user=user,product=product).save()
+        return redirect('showcart')
 
-# user=request.user
-#     if request.user.is_authenticated :
-#         product_id = request.GET.get('prod_id')
-#         product = Products.objects.get(id=product_id)
-#         if Cart.objects.filter(product=product_id).exists():
-#             obj=Cart.objects.get(product=product_id,user=user)
-#             obj.quantity +=1
-#             obj.save()
-#             return redirect('showcart')
-#         else:
-#             Cart(user=user,product=product).save()
-#             return redirect('showcart')
-#     else:
-#         return redirect('login')
-
+    # return redirect("/cart")
+    # Cart(user=user,product=product).save()
+    # user=request.user
+    # # if request.user.is_authenticated :
+    # product_id = request.GET.get('prod_id')
+    # product = Product.objects.get(id=product_id)
+    # if Cart.objects.filter(product=product_id).exists():
+    #     obj=Cart.objects.get(product=product_id,user=user)
+    #     obj.quantity +=1
+    #     obj.save()
+    #     return redirect('showcart')
+    # else:
+    #     Cart(user=user,product=product).save()
+    #     return redirect('showcart')
+    # # else:
+    #     return redirect('login')
+    
+@login_required
 def show_cart(request):
     user = request.user
     cart = Cart.objects.filter(user=user)
@@ -184,6 +207,7 @@ def show_cart(request):
         totalitem = len(Cart.objects.filter(user=request.user))
     return render(request,'app/addtocart.html',locals())
 
+@method_decorator(login_required,name='dispatch')
 class Check_out(View):
     def get(self,request):
         totalitem = 0
@@ -217,7 +241,7 @@ class Check_out(View):
             payment.save()
         return render(request,'app/checkout.html',locals())
     
-    
+@login_required    
 def payment_done(request):
     order_id=request.GET.get('order_id')
     payment_id=request.GET.get('payment_id')
@@ -235,6 +259,7 @@ def payment_done(request):
         c.delete()
     return redirect("orders")
 
+@login_required
 def orders(request):
     totalitem = 0
     wishitem = 0
@@ -330,3 +355,14 @@ def minus_wishlist(request):
             'message':'Wishlist Remove Successfully',
         }
         return JsonResponse(data)
+    
+
+def search(request):
+    query = request.GET['search']
+    totalitem = 0
+    wishitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+    product = Product.objects.filter(Q(title__icontains=query))
+    return render(request,"app/search.html",locals())
