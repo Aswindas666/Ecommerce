@@ -74,10 +74,10 @@
                 </ul>
             </li>
             <li class="nav-item mx-2">
-                <a href="{% url 'showcart' %}" class="nav-link text-white"><span class="badge bg-danger"> {% if totalitem > 0 %} {{totalitem}}{% endif %}</span> Cart</a>
+                <a href="{% url 'showcart' %}" class="nav-link text-white">{% if totalitem > 0 %}<span class="badge bg-danger">  {{totalitem}}</span>{% endif %} Cart</a>
             </li>
             <li class="nav-item mx-2">
-                <a href="#" class="nav-link text-white">Wishlist </a>
+                <a href="#" class="nav-link text-white">{% if wishitem > 0 %} <span class="badge bg-danger">{{wishitem}}</span>{% endif %} <i class="fa fa-heart"></i></a>
             </li>
             {% else %}
             <li class="nav-item mx-2">
