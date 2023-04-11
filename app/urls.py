@@ -22,6 +22,8 @@ urlpatterns = [
     path("cart/",views.show_cart,name="showcart"),
     path("checkout/",views.Check_out.as_view(),name="checkout"),
 
+    
+
     path("paymentdone/",views.payment_done,name="paymentdone"),
     path("orders/",views.orders,name="orders"),
 
