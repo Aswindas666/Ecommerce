@@ -55,7 +55,7 @@ $('.remove-cart').click(function(){
             document.getElementById("totalamount").innerText=data.totalamount
             eml.parentNode.parentNode.parentNode.parentNode.romove()
             // location.reload();
-            window.location.href='http://127.0.0.1:8000/cart/'
+            window.location.href='http://k2dietkit.com/cart/'
         }
     
     })
@@ -72,7 +72,7 @@ $('.plus-wishlist').click(function(){
         },
         success:function(data){
             //alert(data.message)
-            window.location.href='http://127.0.0.1:8000/product_detail/'+id+'/';
+            window.location.href='http://k2dietkit.com/product_detail/'+id+'/';
         }
     
     })
@@ -88,8 +88,8 @@ $('.minus-wishlist').click(function(){
         },
         success:function(data){
             //alert(data.message)
-            window.location.href='http://127.0.0.1:8000/product_detail/'+id+'/';
+            window.location.href='http://k2dietkit.com/product_detail/'+id+'/';
         }
-    
+        // http://127.0.0.1:8000
     })
 })
